@@ -1,0 +1,10 @@
+{
+  "name": "IOI OS \u2014 Competitive Programming Command Centre",
+  "short_name": "IOI OS",
+  "description": "IOI study sequence, playlist tracking, CSES practice, and focus sessions.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#090d18",
+  "theme_color": "#090d18",
+  "icons": []
+}

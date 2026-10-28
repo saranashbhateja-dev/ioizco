@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090d18">
+  <meta name="description" content="IOI OS — a personal competitive programming curriculum, CSES practice tracker, and IOI preparation dashboard.">
+  <title>IOI OS</title>
+  <link rel="stylesheet" href="styles.css?v=ioi-os-edit-reorder-v1.1">
+  <link rel="manifest" href="manifest.webmanifest">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.95.0"></script>
+  <script>window.IOIAndroid = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());</script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand-lockup">
+      <div class="brand-mark"><span>λ</span><i></i></div>
+      <div><div class="brand-name">IOI <span>OS</span></div><div class="brand-caption">COMPETITIVE PROGRAMMING HQ</div></div>
+    </div>
+    <div class="workspace-pill"><span class="pulse-dot"></span><span>IOI 2027 · Training cycle</span><span class="pill-dot">●</span></div>
+    <div class="nav-label">TRAINING</div>
+    <nav class="main-nav" aria-label="Main navigation">
+      <button class="nav-item active" data-view="overview"><span class="nav-icon">◫</span><span>Overview</span><span class="nav-shortcut">01</span></button>
+      <button class="nav-item" data-view="curriculum"><span class="nav-icon">▤</span><span>Curriculum</span><span class="nav-count" id="nav-topic-count">57</span></button>
+      <button class="nav-item" data-view="practice"><span class="nav-icon">⌘</span><span>CSES Practice</span><span class="nav-count" id="nav-problem-count">—</span></button>
+      <button class="nav-item" data-view="analytics"><span class="nav-icon">⌁</span><span>Analytics</span></button>
+      <button class="nav-item" data-view="session"><span class="nav-icon">◷</span><span>Focus Session</span></button>
+    </nav>
+    <div class="nav-label nav-label-spaced">SYSTEM</div>
+    <nav class="main-nav">
+      <button class="nav-item" data-view="resources"><span class="nav-icon">↗</span><span>Resources</span></button>
+      <button class="nav-item" data-view="settings"><span class="nav-icon">⚙</span><span>Settings &amp; backups</span></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-progress-card">
+        <div class="flex-between"><span class="eyebrow">CURRICULUM PROGRESS</span><span class="tiny-muted" id="sidebar-progress-label">0%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="sidebar-progress-bar" style="width:0%"></div></div>
+        <p>Watch the lesson, solve the set, then move on.</p>
+      </div>
+      <div class="sidebar-user"><div class="avatar">IO</div><div class="user-copy"><strong>IOI TRAINING DESK</strong><span>Local-first · Private</span></div><span class="online-indicator"></span></div>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu" id="mobile-menu" aria-label="Open navigation">☰</button>
+        <div class="breadcrumb"><span>IOI OS</span><span class="crumb-slash">/</span><strong id="crumb-current">OVERVIEW</strong></div>
+      </div>
+      <div class="topbar-actions">
+        <div class="global-search-wrap"><span class="search-symbol">⌕</span><input type="search" id="global-search" placeholder="Search topics or CSES tasks…" aria-label="Search topics or tasks"><kbd>⌘ K</kbd></div>
+        <button class="button button-primary" id="continue-button">Continue learning ↗</button>
+      </div>
+    </header>
+
+    <section class="view active" id="view-overview">
+      <div class="page-head">
+        <div>
+          <div class="date-line"><span class="date-square">⌁</span><span id="today-label">IOI 2027 PREPARATION</span><span class="live-tag">TRAINING MODE</span></div>
+          <h1>Think in algorithms. <em>Train for IOI.</em></h1>
+          <p class="page-subtitle">A structured workspace for your 57-topic study sequence: linked video playlists first, then the exact CSES practice set from your roadmap. Track what you actually finish.</p>
+        </div>
+        <div class="head-actions"><button class="button button-quiet" data-go="settings">Backup progress</button><button class="button button-primary" data-go="curriculum">Open curriculum ↗</button></div>
+      </div>
+
+      <div class="notice-strip">
+        <div class="notice-icon">!</div><div><strong>One topic at a time. Practice is part of completion.</strong><p>The supplied PDF instructs you to study the linked playlist, solve the listed CSES tasks, then continue. Repeated tasks are intentionally retained where the PDF reuses them for different techniques.</p></div>
+      </div>
+
+      <div class="metric-grid">
+        <article class="metric-card metric-highlight"><div class="metric-top"><span class="metric-label">TOPICS COMPLETED</span><span class="metric-symbol">◈</span></div><div class="metric-value" id="metric-topics">0<span class="metric-small"> / 57</span></div><div class="metric-bottom"><span class="metric-chip">Sequential roadmap</span><span class="metric-note" id="metric-topic-next">Start at Topic 01</span></div></article>
+        <article class="metric-card"><div class="metric-top"><span class="metric-label">CSES TASKS SOLVED</span><span class="metric-symbol">⌘</span></div><div class="metric-value" id="metric-solved">0<span class="metric-small" id="metric-task-total"> / —</span></div><div class="metric-bottom"><span class="metric-chip chip-amber">Practice-first</span><span class="metric-note" id="metric-task-note">Mark tasks after accepted solutions</span></div></article>
+        <article class="metric-card"><div class="metric-top"><span class="metric-label">STUDY STREAK</span><span class="metric-symbol">✳</span></div><div class="metric-value"><span id="metric-streak">0</span><span class="metric-small"> days</span></div><div class="metric-bottom"><span class="metric-chip">Consistency</span><span class="metric-note">Log a completed study session</span></div></article>
+        <article class="metric-card"><div class="metric-top"><span class="metric-label">FOCUS TIME</span><span class="metric-symbol">◷</span></div><div class="metric-value"><span id="metric-hours">0.0</span><span class="metric-small"> hrs</span></div><div class="metric-bottom"><span class="metric-chip chip-violet">Recorded sessions</span><span class="metric-note">Time logged in IOI OS</span></div></article>
+      </div>
+
+      <div class="dashboard-grid">
+        <section class="panel focus-panel">
+          <div class="panel-head"><div><div class="eyebrow">NEXT ACTION</div><h2 id="next-topic-title">Begin with C++ Basics</h2></div><button class="subtle-link" data-go="curriculum">All 57 topics ↗</button></div>
+          <div id="next-topic-card" class="next-topic-card"></div>
+        </section>
+        <section class="panel readiness-panel">
+          <div class="panel-head"><div><div class="eyebrow">THE BIG PICTURE</div><h2>Roadmap completion</h2></div><span class="corner-mark">57 TOPICS</span></div>
+          <div class="readiness-score"><div class="readiness-ring" id="readiness-ring"><div class="ring-inner"><strong id="readiness-value">0%</strong><span>COMPLETE</span></div></div><div class="readiness-copy"><strong id="readiness-title">Build your baseline</strong><p id="readiness-copy">Complete both the playlist and the listed CSES practice to finish a topic.</p></div></div>
+          <div class="readiness-breakdown"><div class="breakdown-row"><span>Playlists completed</span><strong id="playlist-complete-count">0 / 57</strong></div><div class="breakdown-row"><span>CSES tasks solved</span><strong id="task-complete-count">0</strong></div></div>
+          <div class="panel-footnote"><span class="status-led"></span> Progress is saved locally and syncs to your private cloud account when signed in.</div>
+        </section>
+        <section class="panel timeline-panel">
+          <div class="panel-head"><div><div class="eyebrow">YOUR SEQUENCE</div><h2>Upcoming topics</h2></div><button class="subtle-link" data-go="curriculum">View sequence ↗</button></div>
+          <div class="timeline-list" id="upcoming-list"></div>
+        </section>
+        <section class="panel build-panel">
+          <div class="panel-head"><div><div class="eyebrow">PRACTICE SNAPSHOT</div><h2>Where practice stands</h2></div><button class="subtle-link" data-go="practice">Open CSES tracker ↗</button></div>
+          <div class="practice-summary" id="practice-summary"></div>
+          <div class="panel-footnote">Task completion is tracked per topic, so a repeated CSES task can be checked independently for each technique.</div>
+        </section>
+      </div>
+    </section>
+
+    <section class="view" id="view-curriculum">
+      <div class="page-head"><div><div class="date-line"><span class="date-square">▤</span><span>STUDY SEQUENCE</span><span class="live-tag">57 TOPICS</span></div><h1>The <em>curriculum.</em></h1><p class="page-subtitle">Open a playlist, work through the linked practice set, and mark the topic complete when both parts are done.</p></div></div>
+      <div class="filter-bar"><input id="topic-search" type="search" placeholder="Filter topics…"><select id="topic-filter"><option value="all">All topics</option><option value="not-started">Not started</option><option value="in-progress">In progress</option><option value="completed">Completed</option></select><span class="filter-count" id="topic-result-count">57 topics</span></div>
+      <div class="topic-layout"><div id="topic-list" class="topic-list"></div><aside id="topic-detail" class="panel topic-detail"><div class="empty-detail"><span class="detail-icon">λ</span><h2>Select a topic</h2><p>Choose any topic to see its playlist and CSES practice list.</p></div></aside></div>
+    </section>
+
+    <section class="view" id="view-practice">
+      <div class="page-head"><div><div class="date-line"><span class="date-square">⌘</span><span>PROBLEM TRACKER</span><span class="live-tag">CSES</span></div><h1>Practice until <em>accepted.</em></h1><p class="page-subtitle">Every task from the supplied PDF, with its original topic association and direct CSES link. Repeated tasks remain separate by topic.</p></div></div>
+      <div class="filter-bar"><input id="practice-search" type="search" placeholder="Search CSES problems…"><select id="practice-filter"><option value="all">All tasks</option><option value="unsolved">Unsolved</option><option value="solved">Solved</option></select><select id="practice-topic-filter"><option value="all">All topics</option></select><span class="filter-count" id="practice-result-count"></span></div>
+      <div id="practice-list" class="practice-list"></div>
+    </section>
+
+    <section class="view" id="view-analytics">
+      <div class="page-head"><div><div class="date-line"><span class="date-square">⌁</span><span>TRAINING DATA</span></div><h1>Measure the <em>work.</em></h1><p class="page-subtitle">A transparent view of playlist completion, topic mastery checkpoints, practice volume, and recorded focus time.</p></div></div>
+      <div class="analytics-grid">
+        <section class="panel"><div class="panel-head"><div><div class="eyebrow">TOPIC PROGRESS</div><h2>Completion by sequence block</h2></div></div><div id="topic-chart" class="bar-chart"></div></section>
+        <section class="panel"><div class="panel-head"><div><div class="eyebrow">PRACTICE VOLUME</div><h2>Tasks solved by topic block</h2></div></div><div id="task-chart" class="bar-chart"></div></section>
+        <section class="panel"><div class="panel-head"><div><div class="eyebrow">SESSION HISTORY</div><h2>Recent focus sessions</h2></div></div><div id="session-history" class="timeline-list"></div></section>
+        <section class="panel"><div class="panel-head"><div><div class="eyebrow">MASTERY CHECK</div><h2>Completion rules</h2></div></div><div class="checklist"><p>✓ Playlist marked watched</p><p>✓ Every listed CSES task solved for that topic</p><p>✓ Topic status then becomes complete automatically</p><p>✓ Repeated tasks are tracked independently by topic</p></div></section>
+      </div>
+    </section>
+
+    <section class="view" id="view-session">
+      <div class="page-head"><div><div class="date-line"><span class="date-square">◷</span><span>DEEP WORK</span></div><h1>One focused <em>session.</em></h1><p class="page-subtitle">Use a focused block for lectures or CSES practice. Completed sessions are recorded locally.</p></div></div>
+      <div class="session-layout">
+        <section class="panel timer-panel"><div class="eyebrow">FOCUS TIMER</div><div class="timer-ring" id="timer-ring"><div><strong id="timer-display">25:00</strong><span id="timer-state">READY TO FOCUS</span></div></div><div class="timer-controls"><button class="button button-primary" id="timer-start">Start session</button><button class="button button-quiet" id="timer-reset">Reset</button></div><div class="timer-presets"><button data-minutes="25" class="active">25 min</button><button data-minutes="45">45 min</button><button data-minutes="60">60 min</button></div></section>
+        <section class="panel session-log-panel"><div class="panel-head"><div><div class="eyebrow">SESSION LOG</div><h2>Record completed work</h2></div></div><label for="session-topic">Topic</label><select id="session-topic"></select><label for="session-kind">Session type</label><select id="session-kind"><option value="playlist">Video lecture / playlist</option><option value="practice">CSES practice</option><option value="review">Review / editorial</option></select><label for="session-minutes">Minutes studied</label><input id="session-minutes" type="number" min="1" max="600" value="25"><label for="session-notes">Notes (optional)</label><textarea id="session-notes" rows="3" placeholder="What did you learn? What needs another pass?"></textarea><button class="button button-primary" id="log-session">Save study session</button><p class="muted-small">The timer is optional. You can also log a session manually.</p></section>
+      </div>
+    </section>
+
+    <section class="view" id="view-resources">
+      <div class="page-head"><div><div class="date-line"><span class="date-square">↗</span><span>REFERENCE DESK</span></div><h1>Tools for the <em>training loop.</em></h1><p class="page-subtitle">The primary resources linked in your supplied study sequence.</p></div></div>
+      <div class="resource-grid">
+        <a class="resource-card" href="https://cses.fi/problemset/" target="_blank" rel="noopener"><span class="resource-icon blue">⌘</span><h2>CSES Problem Set</h2><p>Submit solutions, review verdicts, and build the practice habit.</p><span>Open CSES ↗</span></a>
+        <a class="resource-card" href="https://cses.fi/book/book.pdf" target="_blank" rel="noopener"><span class="resource-icon violet">▤</span><h2>CSES Handbook</h2><p>Reference material for competitive programming concepts.</p><span>Open handbook ↗</span></a>
+        <a class="resource-card" href="https://ioinformatics.org/" target="_blank" rel="noopener"><span class="resource-icon amber">◎</span><h2>IOI Official Site</h2><p>Official International Olympiad in Informatics information.</p><span>Open IOI ↗</span></a>
+        <a class="resource-card" href="https://codeforces.com/" target="_blank" rel="noopener"><span class="resource-icon green">⌁</span><h2>Codeforces</h2><p>Additional contest practice when you are ready to expand beyond the listed CSES set.</p><span>Open Codeforces ↗</span></a>
+      </div>
+      <div class="notice-strip"><div class="notice-icon">i</div><div><strong>Source fidelity</strong><p>The 57 topic titles, playlist URLs, and CSES task lists are taken from your uploaded PDF. The additional resource links above are optional general resources and are not represented as part of that PDF's required sequence.</p></div></div>
+    </section>
+
+    <section class="view" id="view-settings">
+      <div class="page-head"><div><div class="date-line"><span class="date-square">⚙</span><span>SETTINGS &amp; CLOUD SYNC</span></div><h1>Your progress, <em>everywhere.</em></h1><p class="page-subtitle">Sign in with the same account on your PC and Android app to keep IOI OS progress in sync. Offline progress remains available on this device.</p></div></div>
+      <section class="panel cloud-panel"><div class="cloud-panel-head"><div><div class="eyebrow">SUPABASE CLOUD</div><h2>Sync your PC and phone</h2><p id="cloud-status-copy">Checking cloud connection…</p></div><span id="cloud-status-pill" class="cloud-pill">CONNECTING</span></div><div id="cloud-auth-form" class="cloud-auth-grid"><label>Email<input id="cloud-email" type="email" autocomplete="email" placeholder="you@example.com"></label><label>Password<input id="cloud-password" type="password" autocomplete="current-password" placeholder="At least 8 characters"></label><div class="cloud-actions"><button class="button button-primary" id="cloud-sign-in">Sign in</button><button class="button button-quiet" id="cloud-sign-up">Create account</button></div></div><div id="cloud-account-panel" class="cloud-account-panel" hidden><div><strong id="cloud-account-email"></strong><small>Cloud sync is enabled for this account.</small></div><button class="button button-quiet" id="cloud-sync-now">Sync now</button><button class="button button-quiet" id="cloud-sign-out">Sign out</button></div><p class="cloud-footnote">Your cloud data is private to your signed-in account. Use the same email and password on both devices. Never put a Supabase secret/service-role key in this app.</p></section>
+      <div class="settings-grid">
+        <section class="panel settings-card"><div class="panel-head"><div><div class="eyebrow">BACKUP</div><h2>Export progress</h2></div></div><p>Download a JSON backup containing topic status, solved tasks, focus sessions, and preferences.</p><button class="button button-primary" id="export-backup">Export backup JSON</button></section>
+        <section class="panel settings-card"><div class="panel-head"><div><div class="eyebrow">RESTORE</div><h2>Import progress</h2></div></div><p>Restore a previously exported IOI OS JSON backup on this device.</p><input type="file" id="import-file" accept="application/json,.json"><button class="button button-quiet" id="import-backup">Import selected backup</button></section>
+        <section class="panel settings-card"><div class="panel-head"><div><div class="eyebrow">RESET</div><h2>Clear local progress</h2></div></div><p>This removes the saved progress from this browser. Export a backup first if you may need it later.</p><button class="button button-danger" id="reset-progress">Reset progress</button></section>
+        <section class="panel settings-card"><div class="panel-head"><div><div class="eyebrow">APP BUILD</div><h2>Android APK workflow</h2></div></div><p>Build a debug APK with GitHub Actions or locally on Windows. See the included APK-BUILD-GUIDE.md.</p><a class="button button-quiet" href="APK-BUILD-GUIDE.md" target="_blank">Read APK build guide ↗</a></section>
+      </div>
+      <div class="panel source-note"><strong>Roadmap source</strong><p>IOI_Topics_Playlists_CSES_Practice(1).pdf — 57 topics, saved playlist links, and expanded CSES practice. The app preserves repeated problem assignments across topics.</p></div>
+    </section>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </main>
+</div>
+<script>
+  if (!window.IOIAndroid && 'serviceWorker' in navigator) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {}));
+  }
+</script>
+<script src="ioi-curriculum.js"></script>
+<script src="app.js?v=ioi-os-edit-reorder-v1.1"></script>
+</body>
+</html>

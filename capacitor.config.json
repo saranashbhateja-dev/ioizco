@@ -1,0 +1,8 @@
+{
+  "appId": "org.ioi.os",
+  "appName": "IOI OS",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
