@@ -1,0 +1,67 @@
+name: Build IOI OS APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Prepare IOI OS web assets
+        run: |
+          rm -rf www
+          mkdir -p www
+          cp index.html styles.css app.js ioi-curriculum.js manifest.webmanifest www/
+          python - <<'PY'
+          from pathlib import Path
+          p = Path("www/index.html")
+          s = p.read_text(encoding="utf-8")
+          s = s.replace(
+              "window.IOIAndroid = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());",
+              "window.IOIAndroid = true;"
+          )
+          p.write_text(s, encoding="utf-8")
+          PY
+
+      - name: Add Android platform
+        run: npx cap add android
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Build debug APK
+        run: cd android && ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: IOI-OS-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
